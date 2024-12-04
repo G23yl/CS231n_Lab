@@ -1,7 +1,7 @@
 from builtins import range
 from builtins import object
 import numpy as np
-from past.builtins import xrange
+# from past.builtins import xrange
 
 
 class KNearestNeighbor(object):
@@ -77,7 +77,7 @@ class KNearestNeighbor(object):
                 #####################################################################
                 # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-                pass
+                dists[i, j] = np.sqrt(np.sum((X[i] - self.X_train[j]) ** 2))
 
                 # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
@@ -101,7 +101,7 @@ class KNearestNeighbor(object):
             #######################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-            pass
+            dists[i] = np.sqrt(np.sum((X[i] - self.X_train) ** 2, axis=1))
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
@@ -131,7 +131,11 @@ class KNearestNeighbor(object):
         #########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        test_train = np.dot(X, self.X_train.T)
+        test_2 = np.sum(X ** 2, axis=1).reshape(-1, 1)
+        train_2 = np.sum(self.X_train ** 2, axis=1).reshape(1, -1)
+
+        dists = np.sqrt(test_2 + train_2 - 2 * test_train)
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
@@ -164,7 +168,8 @@ class KNearestNeighbor(object):
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-            pass
+            k_nearest_idx = np.argsort(dists[i])[:k]
+            closest_y = self.y_train[k_nearest_idx]
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
             #########################################################################
@@ -176,7 +181,10 @@ class KNearestNeighbor(object):
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-            pass
+            d = {}
+            for label in closest_y:
+                d[label] = d.get(label, 0) + 1
+            y_pred[i] = max(d, key=d.get)
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
